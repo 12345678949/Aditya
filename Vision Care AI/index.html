@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VisionCare AI - Advanced Eye Care Consultation</title>
+    <meta name="description" content="AI-powered eye care consultation platform providing personalized advice on treatments, medicines, and surgical recommendations.">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .medical-gradient {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        .chat-message {
+            animation: fadeInUp 0.3s ease-out;
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="gradient-bg text-white shadow-lg">
+        <nav class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-eye text-3xl"></i>
+                    <h1 class="text-2xl font-bold">VisionCare AI</h1>
+                </div>
+                <div class="hidden md:flex space-x-6">
+                    <a href="#home" class="hover:text-blue-200 transition duration-300">Home</a>
+                    <a href="#consultation" class="hover:text-blue-200 transition duration-300">AI Consultation</a>
+                    <a href="#eyepower" class="hover:text-blue-200 transition duration-300">Eye Power Analysis</a>
+                    <a href="#treatments" class="hover:text-blue-200 transition duration-300">Treatments</a>
+                    <a href="#medicines" class="hover:text-blue-200 transition duration-300">Medicines</a>
+                    <a href="#surgery" class="hover:text-blue-200 transition duration-300">Surgery Info</a>
+                </div>
+                <button class="md:hidden text-white">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </nav>
+    </header>
+    
+    <!-- Hero Section -->
+    <section id="home" class="gradient-bg text-white py-20">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-5xl font-bold mb-6">Advanced AI Eye Care Consultation</h2>
+            <p class="text-xl mb-8 max-w-3xl mx-auto  text-white">Get personalized eye care advice, treatment recommendations, and surgical guidance powered by advanced AI technology. Your vision health is our priority.</p>
+            <div class="flex justify-center space-x-4">
+                <button onclick="startConsultation()" class="bg-white text-blue-600 px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition duration-300">
+                    <i class="fas fa-robot mr-2"></i>Start AI Consultation
+                </button>
+                <button onclick="analyzeEyePower()" class="border-2 border-white text-white px-8 py-3 rounded-full font-semibold hover:bg-white hover:text-blue-600 transition duration-300">
+                    <i class="fas fa-glasses mr-2"></i>Eye Power Analysis
+                </button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- AI Consultation Section -->
+    <section id="consultation" class="py-16 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold text-gray-800 mb-4">AI-Powered Eye Care Consultation</h3>
+                <p class="text-gray-600 text-lg max-w-3xl mx-auto">Our advanced AI system analyzes your symptoms and provides personalized recommendations for eye care, treatments, and surgical options.</p>
+            </div>
+            
+            <!-- Consultation Interface -->
+            <div class="max-w-4xl mx-auto bg-gray-50 rounded-2xl shadow-lg p-8">
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Chat Interface -->
+                    <div class="bg-white rounded-xl shadow-md">
+                        <div class="bg-blue-600 text-white p-4 rounded-t-xl">
+                            <h4 class="font-semibold flex items-center">
+                                <i class="fas fa-robot mr-2"></i>AI Eye Care Assistant
+                            </h4>
+                        </div>
+                        <div id="chatMessages" class="h-96 p-4 overflow-y-auto border-b">
+                            <div class="chat-message mb-4">
+                                <div class="bg-blue-100 p-3 rounded-lg">
+                                    <p class="text-sm text-gray-600 mb-1">AI Eye Care Assistant</p>
+                                    <p class="mb-3">👋 Hello! I'm your AI Eye Care Assistant with comprehensive medical knowledge. I can help you with:</p>
+                                    <div class="text-sm space-y-1 mb-3">
+                                        <div class="flex items-center gap-2">
+                                            <i class="fas fa-eye text-blue-600"></i>
+                                            <span>Symptom analysis and recommendations</span>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <i class="fas fa-glasses text-blue-600"></i>
+                                            <span>Eye power and prescription questions</span>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <i class="fas fa-pills text-blue-600"></i>
+                                            <span>Treatment options and medications</span>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <i class="fas fa-user-md text-blue-600"></i>
+                                            <span>When to seek professional care</span>
+                                        </div>
+                                    </div>
+                                    <p class="font-medium text-blue-800">Please describe your eye symptoms or use the quick buttons below! 👇</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <!-- Quick Response Buttons -->
+                            <div id="quickResponses" class="mb-4 flex flex-wrap gap-2">
+                                <button onclick="sendQuickMessage('I have blurred vision')" class="px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-sm hover:bg-gray-300 transition duration-200">
+                                    Blurred Vision
+                                </button>
+                                <button onclick="sendQuickMessage('My eyes are dry and irritated')" class="px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-sm hover:bg-gray-300 transition duration-200">
+                                    Dry Eyes
+                                </button>
+                                <button onclick="sendQuickMessage('I have eye pain')" class="px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-sm hover:bg-gray-300 transition duration-200">
+                                    Eye Pain
+                                </button>
+                                <button onclick="sendQuickMessage('Tell me about my eye power')" class="px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-sm hover:bg-gray-300 transition duration-200">
+                                    Eye Power Info
+                                </button>
+                            </div>
+                            
+                            <div class="flex space-x-2">
+                                <input type="text" id="userMessage" placeholder="Describe your eye symptoms or ask any question..." class="flex-1 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <button onclick="sendMessage()" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-300">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Symptom Checker -->
+                    <div class="bg-white rounded-xl shadow-md p-6">
+                        <h4 class="text-xl font-semibold mb-6 flex items-center">
+                            <i class="fas fa-search-plus mr-2 text-blue-600"></i>Quick Symptom Checker
+                        </h4>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Primary Symptom</label>
+                                <select id="primarySymptom" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="">Select primary symptom</option>
+                                    <option value="blurred_vision">Blurred Vision</option>
+                                    <option value="eye_pain">Eye Pain</option>
+                                    <option value="redness">Redness</option>
+                                    <option value="dry_eyes">Dry Eyes</option>
+                                    <option value="floaters">Floaters</option>
+                                    <option value="light_sensitivity">Light Sensitivity</option>
+                                    <option value="discharge">Eye Discharge</option>
+                                    <option value="double_vision">Double Vision</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Duration</label>
+                                <select id="symptomDuration" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="">Select duration</option>
+                                    <option value="hours">Few hours</option>
+                                    <option value="days">Few days</option>
+                                    <option value="weeks">Few weeks</option>
+                                    <option value="months">Few months</option>
+                                    <option value="chronic">Chronic (ongoing)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Severity (1-10)</label>
+                                <input type="range" id="severityRange" min="1" max="10" value="5" class="w-full">
+                                <div class="flex justify-between text-sm text-gray-600 mt-1">
+                                    <span>Mild</span>
+                                    <span id="severityValue">5</span>
+                                    <span>Severe</span>
+                                </div>
+                            </div>
+                            <button onclick="analyzeSymptoms()" class="w-full medical-gradient text-white py-3 rounded-lg font-semibold hover:opacity-90 transition duration-300">
+                                <i class="fas fa-microscope mr-2"></i>Analyze Symptoms
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Results Panel -->
+                <div id="analysisResults" class="mt-8 hidden">
+                    <div class="bg-white rounded-xl shadow-md p-6">
+                        <h4 class="text-xl font-semibold mb-4 flex items-center">
+                            <i class="fas fa-clipboard-list mr-2 text-green-600"></i>AI Analysis Results
+                        </h4>
+                        <div id="analysisContent" class="space-y-4">
+                            <!-- Dynamic content will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Treatments Section -->
+    <section id="treatments" class="py-16 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold text-gray-800 mb-4">Eye Care Treatments</h3>
+                <p class="text-gray-600 text-lg max-w-3xl mx-auto">Comprehensive treatment options for various eye conditions with detailed information and recommendations.</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Treatment Cards -->
+                <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition duration-300">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-eye-dropper text-4xl text-blue-600 mb-4"></i>
+                        <h4 class="text-xl font-semibold">Non-Surgical Treatments</h4>
+                    </div>
+                    <ul class="space-y-2 text-gray-600">
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Eye Drops & Medications</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Vision Therapy</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Lifestyle Modifications</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Corrective Lenses</li>
+                    </ul>
+                    <button onclick="showTreatmentDetails('non-surgical')" class="w-full mt-4 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                        Learn More
+                    </button>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition duration-300">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-procedures text-4xl text-green-600 mb-4"></i>
+                        <h4 class="text-xl font-semibold">Minimally Invasive</h4>
+                    </div>
+                    <ul class="space-y-2 text-gray-600">
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Laser Therapy</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Injections</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>IPL Treatment</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Photodynamic Therapy</li>
+                    </ul>
+                    <button onclick="showTreatmentDetails('minimally-invasive')" class="w-full mt-4 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition duration-300">
+                        Learn More
+                    </button>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition duration-300">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-user-md text-4xl text-red-600 mb-4"></i>
+                        <h4 class="text-xl font-semibold">Surgical Options</h4>
+                    </div>
+                    <ul class="space-y-2 text-gray-600">
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Cataract Surgery</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>LASIK/PRK</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Retinal Surgery</li>
+                        <li><i class="fas fa-check text-green-500 mr-2"></i>Glaucoma Surgery</li>
+                    </ul>
+                    <button onclick="showTreatmentDetails('surgical')" class="w-full mt-4 bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition duration-300">
+                        Learn More
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Eyedrop Helper -->
+    <section id="eyedrop-helper" class="py-16 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold text-gray-800 mb-4">Eye Drop Helper</h3>
+                <p class="text-gray-600 text-lg max-w-3xl mx-auto">Enter your eye power number to get a friendly suggestion. This is for fun and not real medical advice!</p>
+            </div>
+            
+            <div class="max-w-md mx-auto bg-gray-50 rounded-2xl shadow-lg p-8 text-center">
+                <label for="eyePowerInput" class="block text-lg font-medium text-gray-700 mb-4">What's your eye power number?</label>
+                <input type="number" id="eyePowerInput" placeholder="e.g., -2.5" class="w-full p-3 text-center border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mb-6">
+                
+                <button onclick="recommendEyeDrops()" class="w-full medical-gradient text-white py-3 rounded-lg font-semibold hover:opacity-90 transition duration-300">
+                    <i class="fas fa-eye-dropper mr-2"></i>Find My Drops!
+                </button>
+
+                <div id="eyeDropResult" class="mt-6 text-lg font-semibold text-blue-700">
+                    </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Medicines Section -->
+    <section id="medicines" class="py-16 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold text-gray-800 mb-4">Eye Care Medications</h3>
+                <p class="text-gray-600 text-lg max-w-3xl mx-auto">Comprehensive guide to eye medications, their uses, and proper administration.</p>
+            </div>
+            
+            <div class="max-w-6xl mx-auto">
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Medicine Categories -->
+                    <div class="bg-blue-50 rounded-xl p-6 text-center hover:shadow-md transition duration-300">
+                        <i class="fas fa-tint text-3xl text-blue-600 mb-4"></i>
+                        <h4 class="font-semibold text-gray-800 mb-2">Lubricating Drops</h4>
+                        <p class="text-sm text-gray-600 mb-4">For dry eye relief and comfort</p>
+                        <button onclick="showMedicineInfo('lubricating')" class="text-blue-600 hover:text-blue-800">View Details</button>
+                    </div>
+                    
+                    <div class="bg-green-50 rounded-xl p-6 text-center hover:shadow-md transition duration-300">
+                        <i class="fas fa-shield-virus text-3xl text-green-600 mb-4"></i>
+                        <h4 class="font-semibold text-gray-800 mb-2">Antibiotics</h4>
+                        <p class="text-sm text-gray-600 mb-4">For bacterial infections</p>
+                        <button onclick="showMedicineInfo('antibiotics')" class="text-green-600 hover:text-green-800">View Details</button>
+                    </div>
+                    
+                    <div class="bg-yellow-50 rounded-xl p-6 text-center hover:shadow-md transition duration-300">
+                        <i class="fas fa-fire text-3xl text-yellow-600 mb-4"></i>
+                        <h4 class="font-semibold text-gray-800 mb-2">Anti-inflammatory</h4>
+                        <p class="text-sm text-gray-600 mb-4">For inflammation and swelling</p>
+                        <button onclick="showMedicineInfo('anti-inflammatory')" class="text-yellow-600 hover:text-yellow-800">View Details</button>
+                    </div>
+                    
+                    <div class="bg-red-50 rounded-xl p-6 text-center hover:shadow-md transition duration-300">
+                        <i class="fas fa-eye-slash text-3xl text-red-600 mb-4"></i>
+                        <h4 class="font-semibold text-gray-800 mb-2">Glaucoma Drops</h4>
+                        <p class="text-sm text-gray-600 mb-4">For intraocular pressure</p>
+                        <button onclick="showMedicineInfo('glaucoma')" class="text-red-600 hover:text-red-800">View Details</button>
+                    </div>
+                </div>
+                
+                <!-- Medicine Information Panel -->
+                <div id="medicineInfo" class="mt-8 hidden">
+                    <div class="bg-gray-50 rounded-xl p-6">
+                        <h4 class="text-xl font-semibold mb-4 flex items-center">
+                            <i class="fas fa-pills mr-2 text-blue-600"></i>Medication Information
+                        </h4>
+                        <div id="medicineContent" class="space-y-4">
+                            <!-- Dynamic content will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Surgery Information Section -->
+    <section id="surgery" class="py-16 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold text-gray-800 mb-4">Surgical Recommendations</h3>
+                <p class="text-gray-600 text-lg max-w-3xl mx-auto">AI-powered analysis to determine if surgical intervention is necessary for your eye condition.</p>
+            </div>
+            
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-white rounded-2xl shadow-lg p-8">
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <!-- Surgery Assessment Form -->
+                        <div>
+                            <h4 class="text-xl font-semibold mb-6 flex items-center">
+                                <i class="fas fa-stethoscope mr-2 text-blue-600"></i>Surgery Assessment
+                            </h4>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Eye Condition</label>
+                                    <select id="eyeCondition" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        <option value="">Select condition</option>
+                                        <option value="cataract">Cataract</option>
+                                        <option value="glaucoma">Glaucoma</option>
+                                        <option value="retinal_detachment">Retinal Detachment</option>
+                                        <option value="macular_degeneration">Macular Degeneration</option>
+                                        <option value="refractive_error">Refractive Error</option>
+                                        <option value="diabetic_retinopathy">Diabetic Retinopathy</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Current Vision Quality</label>
+                                    <select id="visionQuality" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        <option value="">Select vision quality</option>
+                                        <option value="excellent">Excellent (20/20 or better)</option>
+                                        <option value="good">Good (20/25 to 20/40)</option>
+                                        <option value="moderate">Moderate (20/50 to 20/80)</option>
+                                        <option value="poor">Poor (20/100 to 20/200)</option>
+                                        <option value="severe">Severe (worse than 20/200)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Age Group</label>
+                                    <select id="ageGroup" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        <option value="">Select age group</option>
+                                        <option value="under_40">Under 40</option>
+                                        <option value="40_60">40-60 years</option>
+                                        <option value="over_60">Over 60 years</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Impact on Daily Life</label>
+                                    <select id="dailyImpact" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        <option value="">Select impact level</option>
+                                        <option value="minimal">Minimal impact</option>
+                                        <option value="moderate">Moderate interference</option>
+                                        <option value="significant">Significant limitation</option>
+                                        <option value="severe">Severe disability</option>
+                                    </select>
+                                </div>
+                                <button onclick="assessSurgery()" class="w-full medical-gradient text-white py-3 rounded-lg font-semibold hover:opacity-90 transition duration-300">
+                                    <i class="fas fa-user-md mr-2"></i>Get Surgery Recommendation
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Surgery Information -->
+                        <div>
+                            <h4 class="text-xl font-semibold mb-6 flex items-center">
+                                <i class="fas fa-info-circle mr-2 text-green-600"></i>Surgery Information
+                            </h4>
+                            <div class="space-y-4">
+                                <div class="bg-blue-50 p-4 rounded-lg">
+                                    <h5 class="font-semibold text-blue-800 mb-2">When Surgery is Recommended</h5>
+                                    <ul class="text-sm text-blue-700 space-y-1">
+                                        <li>• Vision significantly impacts daily activities</li>
+                                        <li>• Conservative treatments have failed</li>
+                                        <li>• Progressive conditions threatening sight</li>
+                                        <li>• Risk-benefit analysis favors surgery</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-yellow-50 p-4 rounded-lg">
+                                    <h5 class="font-semibold text-yellow-800 mb-2">Preparation Guidelines</h5>
+                                    <ul class="text-sm text-yellow-700 space-y-1">
+                                        <li>• Complete pre-operative assessment</li>
+                                        <li>• Discuss risks and benefits</li>
+                                        <li>• Follow pre-surgery instructions</li>
+                                        <li>• Arrange post-operative care</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-green-50 p-4 rounded-lg">
+                                    <h5 class="font-semibold text-green-800 mb-2">Success Rates</h5>
+                                    <div class="text-sm text-green-700 space-y-1">
+                                        <div class="flex justify-between">
+                                            <span>Cataract Surgery:</span>
+                                            <span class="font-medium">95-98%</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span>LASIK/PRK:</span>
+                                            <span class="font-medium">90-95%</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span>Glaucoma Surgery:</span>
+                                            <span class="font-medium">80-90%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Surgery Recommendation Results -->
+                    <div id="surgeryResults" class="mt-8 hidden">
+                        <div class="bg-gray-50 rounded-xl p-6">
+                            <h4 class="text-xl font-semibold mb-4 flex items-center">
+                                <i class="fas fa-clipboard-check mr-2 text-purple-600"></i>AI Surgery Recommendation
+                            </h4>
+                            <div id="surgeryContent" class="space-y-4">
+                                <!-- Dynamic content will be inserted here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Eye Power Analysis Section -->
+    <section id="eyepower" class="py-16 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold text-gray-800 mb-4">Eye Power Number Analysis</h3>
+                <p class="text-gray-600 text-lg max-w-3xl mx-auto">Get AI-powered consultation based on your eye power numbers. Understand your vision condition and receive personalized recommendations.</p>
+            </div>
+            
+            <div class="max-w-6xl mx-auto">
+                <div class="grid lg:grid-cols-2 gap-8">
+                    <!-- Eye Power Input Form -->
+                    <div class="bg-gray-50 rounded-2xl shadow-lg p-8">
+                        <h4 class="text-2xl font-semibold mb-6 flex items-center text-blue-600">
+                            <i class="fas fa-glasses mr-3"></i>Enter Your Eye Power
+                        </h4>
+                        
+                        <div class="space-y-6">
+                            <!-- Right Eye -->
+                            <div class="bg-white p-6 rounded-xl shadow-md">
+                                <h5 class="font-semibold text-lg mb-4 flex items-center">
+                                    <i class="fas fa-eye mr-2 text-green-600"></i>Right Eye (OD)
+                                </h5>
+                                <div class="grid md:grid-cols-3 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Sphere (SPH)</label>
+                                        <input type="number" id="rightSphere" step="0.25" min="-20" max="20" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="0.00">
+                                        <span class="text-xs text-gray-500">Range: -20.00 to +20.00</span>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Cylinder (CYL)</label>
+                                        <input type="number" id="rightCylinder" step="0.25" min="-6" max="0" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="0.00">
+                                        <span class="text-xs text-gray-500">Range: -6.00 to 0.00</span>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Axis</label>
+                                        <input type="number" id="rightAxis" min="0" max="180" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="0">
+                                        <span class="text-xs text-gray-500">Range: 0° to 180°</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Left Eye -->
+                            <div class="bg-white p-6 rounded-xl shadow-md">
+                                <h5 class="font-semibold text-lg mb-4 flex items-center">
+                                    <i class="fas fa-eye mr-2 text-blue-600"></i>Left Eye (OS)
+                                </h5>
+                                <div class="grid md:grid-cols-3 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Sphere (SPH)</label>
+                                        <input type="number" id="leftSphere" step="0.25" min="-20" max="20" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="0.00">
+                                        <span class="text-xs text-gray-500">Range: -20.00 to +20.00</span>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Cylinder (CYL)</label>
+                                        <input type="number" id="leftCylinder" step="0.25" min="-6" max="0" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="0.00">
+                                        <span class="text-xs text-gray-500">Range: -6.00 to 0.00</span>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Axis</label>
+                                        <input type="number" id="leftAxis" min="0" max="180" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="0">
+                                        <span class="text-xs text-gray-500">Range: 0° to 180°</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Additional Information -->
+                            <div class="bg-white p-6 rounded-xl shadow-md">
+                                <h5 class="font-semibold text-lg mb-4 flex items-center">
+                                    <i class="fas fa-info-circle mr-2 text-purple-600"></i>Additional Details
+                                </h5>
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Age Group</label>
+                                        <select id="eyePowerAge" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            <option value="">Select age group</option>
+                                            <option value="child">Child (5-17 years)</option>
+                                            <option value="young_adult">Young Adult (18-35 years)</option>
+                                            <option value="middle_age">Middle Age (36-50 years)</option>
+                                            <option value="senior">Senior (51+ years)</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Last Eye Test</label>
+                                        <select id="lastEyeTest" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            <option value="">Select timeframe</option>
+                                            <option value="recent">Within 6 months</option>
+                                            <option value="year">6 months - 1 year</option>
+                                            <option value="two_years">1-2 years ago</option>
+                                            <option value="old">More than 2 years</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button onclick="analyzeEyePowerNumbers()" class="w-full medical-gradient text-white py-4 rounded-xl font-semibold text-lg hover:opacity-90 transition duration-300">
+                                <i class="fas fa-chart-line mr-3"></i>Analyze My Eye Power
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Eye Power Information -->
+                    <div class="space-y-6">
+                        <!-- Power Scale Guide -->
+                        <div class="bg-blue-50 rounded-xl p-6 border border-blue-200">
+                            <h4 class="text-xl font-semibold mb-4 flex items-center text-blue-800">
+                                <i class="fas fa-ruler mr-2"></i>Eye Power Scale Guide
+                            </h4>
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center p-3 bg-white rounded-lg">
+                                    <span class="font-medium">Mild Myopia</span>
+                                    <span class="text-blue-600">-0.25 to -3.00</span>
+                                </div>
+                                <div class="flex justify-between items-center p-3 bg-white rounded-lg">
+                                    <span class="font-medium">Moderate Myopia</span>
+                                    <span class="text-yellow-600">-3.00 to -6.00</span>
+                                </div>
+                                <div class="flex justify-between items-center p-3 bg-white rounded-lg">
+                                    <span class="font-medium">High Myopia</span>
+                                    <span class="text-red-600">-6.00 and above</span>
+                                </div>
+                                <div class="flex justify-between items-center p-3 bg-white rounded-lg">
+                                    <span class="font-medium">Hyperopia (Farsighted)</span>
+                                    <span class="text-green-600">+0.25 and above</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Understanding Your Prescription -->
+                        <div class="bg-green-50 rounded-xl p-6 border border-green-200">
+                            <h4 class="text-xl font-semibold mb-4 flex items-center text-green-800">
+                                <i class="fas fa-book-medical mr-2"></i>Understanding Your Prescription
+                            </h4>
+                            <div class="space-y-3 text-sm text-green-700">
+                                <div class="flex items-start gap-3">
+                                    <i class="fas fa-circle text-xs mt-2"></i>
+                                    <div>
+                                        <strong>Sphere (SPH):</strong> Indicates nearsightedness (-) or farsightedness (+)
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <i class="fas fa-circle text-xs mt-2"></i>
+                                    <div>
+                                        <strong>Cylinder (CYL):</strong> Measures astigmatism (usually negative values)
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <i class="fas fa-circle text-xs mt-2"></i>
+                                    <div>
+                                        <strong>Axis:</strong> Direction of astigmatism correction (0-180 degrees)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Power Progression Chart -->
+                        <div class="bg-purple-50 rounded-xl p-6 border border-purple-200">
+                            <h4 class="text-xl font-semibold mb-4 flex items-center text-purple-800">
+                                <i class="fas fa-chart-area mr-2"></i>Power Progression Tracking
+                            </h4>
+                            <div style="height: 300px;">
+                                <canvas id="powerProgressChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Analysis Results -->
+                <div id="eyePowerResults" class="mt-12 hidden">
+                    <div class="bg-white rounded-2xl shadow-lg p-8 border">
+                        <h4 class="text-2xl font-semibold mb-6 flex items-center text-blue-600">
+                            <i class="fas fa-microscope mr-3"></i>Your Eye Power Analysis Results
+                        </h4>
+                        <div id="eyePowerContent" class="space-y-6">
+                            <!-- Dynamic content will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ayurvedic Treatment Section -->
+    <section id="ayurvedic" class="py-16 bg-green-50">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12">
+                <h3 class="text-4xl font-bold text-gray-800 mb-4">Ayurvedic Eye Care</h3>
+                <p class="text-gray-600 text-lg max-w-3xl mx-auto">Explore holistic and natural Ayurvedic remedies for eye health, based on centuries of traditional knowledge.</p>
+                 <p class="text-sm text-gray-500 mt-2"><strong>Disclaimer:</strong> Always consult with a qualified Ayurvedic practitioner and an ophthalmologist before trying any new treatments.</p>
+            </div>
+            
+            <div class="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg p-8 grid lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h4 class="text-2xl font-semibold mb-6 flex items-center text-green-700">
+                        <i class="fas fa-leaf mr-3"></i>Key Ayurvedic Practices
+                    </h4>
+                    <div class="space-y-6">
+                        <div>
+                            <h5 class="font-semibold text-lg text-gray-800">Triphala Eyewash</h5>
+                            <p class="text-gray-600 mt-1">An eyewash made from Triphala (a combination of three fruits: Amalaki, Bibhitaki, and Haritaki) is traditionally used to reduce eye strain, combat infections, and soothe redness. Its antioxidant properties help protect the eyes.</p>
+                        </div>
+                        <div>
+                            <h5 class="font-semibold text-lg text-gray-800">Netra Tarpana</h5>
+                            <p class="text-gray-600 mt-1">This is a rejuvenating treatment where a dough ring is placed around the eyes and filled with lukewarm medicated ghee (Ghrita). It is believed to nourish the eye tissues, improve vision, and relieve dryness and fatigue.</p>
+                        </div>
+                        <div>
+                            <h5 class="font-semibold text-lg text-gray-800">Diet and Lifestyle</h5>
+                            <p class="text-gray-600 mt-1">Ayurveda emphasizes a diet rich in Vitamin A and antioxidants. Including foods like carrots, leafy greens, almonds, and amla (Indian gooseberry) can support long-term eye health. Reducing screen time and practicing eye exercises are also recommended.</p>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                     <h4 class="text-2xl font-semibold mb-6 flex items-center text-green-700">
+                        <i class="fas fa-atom mr-3"></i>Active Compounds in Remedies
+                    </h4>
+                    <div class="bg-gray-100 p-4 rounded-lg">
+                        <img src="molecules.png" alt="Chemical structures of Gallic Acid and Phenethyl Alcohol" class="w-full h-auto rounded-md">
+                        <p class="text-center text-sm text-gray-600 mt-2">Key molecules like Gallic Acid (from Triphala) and Phenethyl Alcohol (from rose water) have known antioxidant and antimicrobial properties.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Information -->
+    <section id="contact" class="py-16">
+        <div class="container mx-auto px-6">
+            <div class="max-w-4xl mx-auto text-center">
+                <div class="text-center mb-12">
+                    <h3 class="text-4xl font-bold text-gray-800 mb-4">Contact Us</h3>
+                    <p class="text-gray-600 text-lg max-w-3xl mx-auto">We're here to help. For emergencies, please use the contact information below.</p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-lg p-8">
+                    <h4 class="font-medium text-gray-800 text-2xl mb-4">Emergency Contact</h4>
+                    <p class="text-red-600 font-bold text-3xl">24/7 Emergency Line: (555) 911-EYES</p>
+                    <p class="text-lg text-gray-600 mt-2">For urgent eye emergencies and immediate vision threats</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="gradient-bg text-white py-12">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-3 mb-4">
+                        <i class="fas fa-eye text-2xl"></i>
+                        <h4 class="text-xl font-bold">VisionCare AI</h4>
+                    </div>
+                    <p class="text-blue-100 mb-4">Advanced AI-powered eye care consultation platform providing personalized treatment recommendations.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-blue-200 hover:text-white"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-blue-200 hover:text-white"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-blue-200 hover:text-white"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="text-blue-200 hover:text-white"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h5 class="font-semibold mb-4">Services</h5>
+                    <ul class="space-y-2 text-blue-100">
+                        <li><a href="#consultation" class="hover:text-white">AI Consultation</a></li>
+                        <li><a href="#eyepower" class="hover:text-white">Eye Power Analysis</a></li>
+                        <li><a href="#treatments" class="hover:text-white">Treatments</a></li>
+                        <li><a href="#medicines" class="hover:text-white">Medications</a></li>
+                        <li><a href="#surgery" class="hover:text-white">Surgery Guidance</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="font-semibold mb-4">Resources</h5>
+                    <ul class="space-y-2 text-blue-100">
+                        <li><a href="#" class="hover:text-white">Eye Health Tips</a></li>
+                        <li><a href="#" class="hover:text-white">FAQs</a></li>
+                        <li><a href="#" class="hover:text-white">Patient Portal</a></li>
+                        <li><a href="#" class="hover:text-white">Insurance Info</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="font-semibold mb-4">Legal</h5>
+                    <ul class="space-y-2 text-blue-100">
+                        <li><a href="#" class="hover:text-white">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-white">Terms of Service</a></li>
+                        <li><a href="#" class="hover:text-white">HIPAA Compliance</a></li>
+                        <li><a href="#" class="hover:text-white">Medical Disclaimer</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-blue-400 mt-8 pt-8 text-center">
+                <p class="text-blue-100">&copy; 2024 VisionCare AI. All rights reserved. | This platform provides educational information and should not replace professional medical advice.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
