@@ -19,11 +19,59 @@ let userProfile = {
 function initializeApp() {
     console.log('VisionCare AI initialized');
     
+    // Test chatbot functionality
+    testChatbotSetup();
+    
     // Initialize mobile menu if needed
     initializeMobileMenu();
     
     // Initialize sample power progression chart
     initializeSamplePowerChart();
+}
+
+function testChatbotSetup() {
+    console.log('Testing chatbot setup...');
+    
+    // Check if chat elements exist
+    const chatMessages = document.getElementById('chatMessages');
+    const userMessage = document.getElementById('userMessage');
+    const quickResponses = document.getElementById('quickResponses');
+    
+    console.log('Chat messages container:', chatMessages ? 'Found' : 'Not found');
+    console.log('User message input:', userMessage ? 'Found' : 'Not found');
+    console.log('Quick responses:', quickResponses ? 'Found' : 'Not found');
+    
+    // Test that sendMessage function exists
+    console.log('sendMessage function:', typeof sendMessage);
+    
+    // Add test message to show chatbot is ready
+    if (chatMessages) {
+        console.log('Chatbot is ready for user interaction');
+        
+        // Optional: Add a demo after 10 seconds (uncomment to enable)
+        // setTimeout(() => {
+        //     console.log('Running chatbot demo...');
+        //     demoChat();
+        // }, 10000);
+    }
+}
+
+// Demo function to show chatbot working (for testing)
+function demoChat() {
+    console.log('Demo: Simulating user message');
+    
+    // Simulate user typing and sending a message
+    const userMessageInput = document.getElementById('userMessage');
+    if (userMessageInput) {
+        userMessageInput.value = "Hello, I have been experiencing blurred vision lately";
+        
+        // Add a visual indicator that this is a demo
+        addMessageToChat('system', '🤖 Demo: The following is an automated conversation to demonstrate the AI chatbot functionality:');
+        
+        setTimeout(() => {
+            sendMessage();
+        }, 1000);
+    }
 }
 
 // Initialize all event listeners
@@ -80,58 +128,109 @@ function toggleMobileMenu() {
 
 // AI Chatbot Functionality
 function sendMessage() {
-    const messageInput = document.getElementById('userMessage');
-    const message = messageInput.value.trim();
+    console.log('sendMessage called');
     
-    if (!message) return;
-    
-    // Add user message to chat
-    addMessageToChat('user', message);
-    messageInput.value = '';
-    
-    // Hide quick responses after first message
-    hideQuickResponses();
-    
-    // Show typing indicator
-    showTypingIndicator();
-    
-    // Process message with AI (simulated) - varying response time for realism
-    const responseTime = 1000 + Math.random() * 2000; // 1-3 seconds
-    setTimeout(() => {
-        processAIResponse(message);
-    }, responseTime);
+    try {
+        const messageInput = document.getElementById('userMessage');
+        if (!messageInput) {
+            console.error('Message input element not found');
+            return;
+        }
+        
+        const message = messageInput.value.trim();
+        console.log('User message:', message);
+        
+        if (!message) {
+            console.log('Empty message, returning');
+            return;
+        }
+        
+        // Add user message to chat
+        addMessageToChat('user', message);
+        messageInput.value = '';
+        
+        // Hide quick responses after first message
+        hideQuickResponses();
+        
+        // Show typing indicator
+        showTypingIndicator();
+        
+        // Process message with AI (simulated) - varying response time for realism
+        const responseTime = 1000 + Math.random() * 2000; // 1-3 seconds
+        console.log('Processing response in', responseTime, 'ms');
+        
+        setTimeout(() => {
+            processAIResponse(message);
+        }, responseTime);
+        
+    } catch (error) {
+        console.error('Error in sendMessage:', error);
+    }
 }
 
 function sendQuickMessage(message) {
-    const messageInput = document.getElementById('userMessage');
-    messageInput.value = message;
-    sendMessage();
+    console.log('Quick message clicked:', message);
+    try {
+        const messageInput = document.getElementById('userMessage');
+        if (messageInput) {
+            messageInput.value = message;
+            sendMessage();
+        } else {
+            console.error('Message input not found');
+        }
+    } catch (error) {
+        console.error('Error in sendQuickMessage:', error);
+    }
 }
 
 function hideQuickResponses() {
-    const quickResponses = document.getElementById('quickResponses');
-    if (quickResponses) {
-        quickResponses.style.display = 'none';
+    try {
+        const quickResponses = document.getElementById('quickResponses');
+        if (quickResponses) {
+            quickResponses.style.display = 'none';
+        }
+    } catch (error) {
+        console.error('Error hiding quick responses:', error);
     }
 }
 
 function addMessageToChat(sender, message) {
     const chatMessages = document.getElementById('chatMessages');
+    if (!chatMessages) {
+        console.error('Chat messages container not found');
+        return;
+    }
+    
     const messageDiv = document.createElement('div');
     messageDiv.className = 'chat-message mb-4';
     
     const isUser = sender === 'user';
     const bgClass = isUser ? 'bg-blue-600 text-white ml-auto' : 'bg-blue-100 text-gray-800';
     
+    // Convert markdown-style formatting to HTML
+    const formattedMessage = formatMessageText(message);
+    
     messageDiv.innerHTML = `
-        <div class="${bgClass} p-3 rounded-lg max-w-xs">
-            <p class="text-sm ${isUser ? 'text-blue-100' : 'text-gray-600'} mb-1">${isUser ? 'You' : 'AI Assistant'}</p>
-            <p>${message}</p>
+        <div class="${bgClass} p-3 rounded-lg max-w-xs md:max-w-md">
+            <p class="text-xs ${isUser ? 'text-blue-100' : 'text-gray-600'} mb-1">${isUser ? 'You' : 'AI Assistant'}</p>
+            <div class="text-sm">${formattedMessage}</div>
         </div>
     `;
     
     chatMessages.appendChild(messageDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function formatMessageText(message) {
+    // Convert markdown-style formatting to HTML
+    let formatted = message
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Bold text
+        .replace(/\*(.*?)\*/g, '<em>$1</em>') // Italic text
+        .replace(/\n/g, '<br>') // Line breaks
+        .replace(/• /g, '• ') // Bullet points
+        .replace(/(\d+\.)/g, '<strong>$1</strong>'); // Numbered lists
+    
+    return formatted;
 }
 
 function showTypingIndicator() {
@@ -154,43 +253,58 @@ function showTypingIndicator() {
 }
 
 function removeTypingIndicator() {
-    const typingIndicator = document.getElementById('typingIndicator');
-    if (typingIndicator) {
-        typingIndicator.remove();
+    try {
+        const typingIndicator = document.getElementById('typingIndicator');
+        if (typingIndicator) {
+            typingIndicator.remove();
+        }
+    } catch (error) {
+        console.error('Error removing typing indicator:', error);
     }
 }
 
 // Enhanced AI Response Processing with Medical Knowledge Base
 function processAIResponse(userMessage) {
-    removeTypingIndicator();
-    
-    // Add to conversation history
-    conversationHistory.push({
-        type: 'user',
-        message: userMessage,
-        timestamp: new Date()
-    });
-    
-    const analysisResult = comprehensiveMessageAnalysis(userMessage);
-    
-    // Update user profile based on conversation
-    updateUserProfile(analysisResult);
-    
-    const response = generateIntelligentResponse(analysisResult, userMessage);
-    
-    // Add AI response to conversation history
-    conversationHistory.push({
-        type: 'ai',
-        message: response,
-        timestamp: new Date()
-    });
-    
-    addMessageToChat('ai', response);
-    
-    // Show follow-up suggestions after response
-    setTimeout(() => {
-        showFollowUpSuggestions(analysisResult);
-    }, 2000);
+    try {
+        removeTypingIndicator();
+        
+        console.log('Processing AI response for:', userMessage);
+        
+        // Add to conversation history
+        conversationHistory.push({
+            type: 'user',
+            message: userMessage,
+            timestamp: new Date()
+        });
+        
+        const analysisResult = comprehensiveMessageAnalysis(userMessage);
+        console.log('Analysis result:', analysisResult);
+        
+        // Update user profile based on conversation
+        updateUserProfile(analysisResult);
+        
+        const response = generateIntelligentResponse(analysisResult, userMessage);
+        console.log('Generated response:', response);
+        
+        // Add AI response to conversation history
+        conversationHistory.push({
+            type: 'ai',
+            message: response,
+            timestamp: new Date()
+        });
+        
+        addMessageToChat('ai', response);
+        
+        // Show follow-up suggestions after response
+        setTimeout(() => {
+            showFollowUpSuggestions(analysisResult);
+        }, 1500);
+        
+    } catch (error) {
+        console.error('Error in processAIResponse:', error);
+        // Fallback response
+        addMessageToChat('ai', 'I apologize, but I encountered an error processing your request. Please try asking your question again, and I\'ll do my best to help you with your eye care concerns.');
+    }
 }
 
 function updateUserProfile(analysisResult) {
@@ -216,222 +330,199 @@ function updateUserProfile(analysisResult) {
 }
 
 function showFollowUpSuggestions(analysisResult) {
-    const chatMessages = document.getElementById('chatMessages');
-    const suggestions = generateFollowUpSuggestions(analysisResult);
-    
-    if (suggestions.length > 0) {
-        const suggestionDiv = document.createElement('div');
-        suggestionDiv.className = 'chat-message mb-4';
-        suggestionDiv.innerHTML = `
-            <div class="bg-green-50 border border-green-200 p-3 rounded-lg">
-                <p class="text-sm text-green-800 font-medium mb-2">💡 You might also want to know:</p>
-                <div class="flex flex-wrap gap-2">
-                    ${suggestions.map(suggestion => `
-                        <button onclick="sendQuickMessage('${suggestion.message}')" 
-                                class="px-3 py-1 bg-green-200 text-green-800 rounded-full text-xs hover:bg-green-300 transition duration-200">
-                            ${suggestion.label}
-                        </button>
-                    `).join('')}
-                </div>
-            </div>
-        `;
+    try {
+        const chatMessages = document.getElementById('chatMessages');
+        if (!chatMessages) return;
         
-        chatMessages.appendChild(suggestionDiv);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+        const suggestions = generateFollowUpSuggestions(analysisResult);
+        
+        if (suggestions && suggestions.length > 0) {
+            const suggestionDiv = document.createElement('div');
+            suggestionDiv.className = 'chat-message mb-4';
+            suggestionDiv.innerHTML = `
+                <div class="bg-green-50 border border-green-200 p-3 rounded-lg">
+                    <p class="text-sm text-green-800 font-medium mb-2">💡 You might also want to know:</p>
+                    <div class="flex flex-wrap gap-2">
+                        ${suggestions.map(suggestion => `
+                            <button onclick="sendQuickMessage('${suggestion.message.replace(/'/g, "\\'")}');" 
+                                    class="px-3 py-1 bg-green-200 text-green-800 rounded-full text-xs hover:bg-green-300 transition duration-200">
+                                ${suggestion.label}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            chatMessages.appendChild(suggestionDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+    } catch (error) {
+        console.error('Error in showFollowUpSuggestions:', error);
+        // Silently fail for follow-up suggestions
     }
 }
 
 function generateFollowUpSuggestions(analysisResult) {
-    const suggestions = [];
-    
-    // Symptom-based follow-ups
-    if (analysisResult.symptoms.length > 0) {
-        suggestions.push({
-            label: 'Prevention tips',
-            message: 'How can I prevent this from happening again?'
-        });
+    try {
+        const suggestions = [];
         
-        if (!analysisResult.treatmentQuery.detected) {
+        // Safe access to analysis results
+        const symptoms = analysisResult?.symptoms || [];
+        const powerQuery = analysisResult?.powerQuery || { detected: false };
+        const treatmentQuery = analysisResult?.treatmentQuery || { detected: false };
+        
+        // Symptom-based follow-ups
+        if (symptoms.length > 0) {
             suggestions.push({
-                label: 'Treatment options',
-                message: 'What are the treatment options for this?'
+                label: 'Prevention tips',
+                message: 'How can I prevent this from happening again?'
+            });
+            
+            if (!treatmentQuery.detected) {
+                suggestions.push({
+                    label: 'Treatment options',
+                    message: 'What are the treatment options for this?'
+                });
+            }
+        }
+        
+        // Power query follow-ups
+        if (powerQuery.detected) {
+            suggestions.push({
+                label: 'Power analysis',
+                message: 'Can you analyze my eye power numbers?'
+            });
+            
+            suggestions.push({
+                label: 'Surgery options',
+                message: 'Should I consider eye surgery?'
             });
         }
-    }
-    
-    // Power query follow-ups
-    if (analysisResult.powerQuery.detected) {
-        suggestions.push({
-            label: 'Power analysis',
-            message: 'Can you analyze my eye power numbers?'
-        });
         
-        suggestions.push({
-            label: 'Surgery options',
-            message: 'Should I consider eye surgery?'
-        });
-    }
-    
-    // General follow-ups
-    if (!analysisResult.symptoms.length && !analysisResult.powerQuery.detected) {
-        suggestions.push({
-            label: 'Eye care tips',
-            message: 'Give me some general eye care tips'
-        });
+        // General follow-ups
+        if (symptoms.length === 0 && !powerQuery.detected) {
+            suggestions.push({
+                label: 'Eye care tips',
+                message: 'Give me some general eye care tips'
+            });
+            
+            suggestions.push({
+                label: 'Common problems',
+                message: 'What are common eye problems?'
+            });
+        }
         
-        suggestions.push({
-            label: 'Common problems',
-            message: 'What are common eye problems?'
-        });
+        return suggestions.slice(0, 3); // Limit to 3 suggestions
+        
+    } catch (error) {
+        console.error('Error in generateFollowUpSuggestions:', error);
+        // Return default suggestions
+        return [
+            {
+                label: 'Eye care tips',
+                message: 'Give me some general eye care tips'
+            },
+            {
+                label: 'Common problems',
+                message: 'What are common eye problems?'
+            }
+        ];
     }
-    
-    return suggestions.slice(0, 3); // Limit to 3 suggestions
 }
 
 // Comprehensive message analysis with medical intelligence
 function comprehensiveMessageAnalysis(message) {
-    const lowerMessage = message.toLowerCase();
-    
-    // Analyze symptoms with detailed medical knowledge
-    const symptoms = analyzeDetailedSymptoms(message);
-    
-    // Detect eye power related queries
-    const powerQuery = analyzePowerQueries(message);
-    
-    // Detect treatment questions
-    const treatmentQuery = analyzeTreatmentQueries(message);
-    
-    // Detect urgency level
-    const urgency = assessUrgencyLevel(message);
-    
-    // Detect question type
-    const questionType = classifyQuestionType(message);
-    
-    return {
-        symptoms: symptoms,
-        powerQuery: powerQuery,
-        treatmentQuery: treatmentQuery,
-        urgency: urgency,
-        questionType: questionType,
-        originalMessage: message
-    };
+    try {
+        const lowerMessage = message.toLowerCase();
+        
+        // Analyze symptoms with detailed medical knowledge
+        const symptoms = analyzeDetailedSymptoms(message);
+        
+        // Detect eye power related queries
+        const powerQuery = analyzePowerQueries(message);
+        
+        // Detect treatment questions
+        const treatmentQuery = analyzeTreatmentQueries(message);
+        
+        // Detect urgency level
+        const urgency = assessUrgencyLevel(message);
+        
+        // Detect question type
+        const questionType = classifyQuestionType(message);
+        
+        return {
+            symptoms: symptoms || [],
+            powerQuery: powerQuery || { detected: false },
+            treatmentQuery: treatmentQuery || { detected: false },
+            urgency: urgency || 'low',
+            questionType: questionType || 'general_question',
+            originalMessage: message
+        };
+    } catch (error) {
+        console.error('Error in comprehensiveMessageAnalysis:', error);
+        // Return safe defaults
+        return {
+            symptoms: [],
+            powerQuery: { detected: false },
+            treatmentQuery: { detected: false },
+            urgency: 'low',
+            questionType: 'general_question',
+            originalMessage: message
+        };
+    }
 }
 
 // Advanced symptom analysis with severity and context
 function analyzeDetailedSymptoms(message) {
-    const lowerMessage = message.toLowerCase();
-    const detectedSymptoms = [];
-    
-    // Comprehensive symptom database with severity indicators
-    const symptomDatabase = {
-        'blurred_vision': {
-            keywords: ['blurred', 'blur', 'fuzzy', 'unclear', 'hazy', 'cloudy', 'not sharp', 'cannot see clearly'],
-            severity_keywords: {
-                mild: ['slightly', 'little', 'sometimes'],
-                moderate: ['often', 'usually', 'most times'],
-                severe: ['very', 'extremely', 'always', 'constantly', 'terrible']
-            }
-        },
-        'eye_pain': {
-            keywords: ['pain', 'hurt', 'ache', 'sore', 'burning', 'stinging', 'stabbing', 'throbbing'],
-            severity_keywords: {
-                mild: ['slight', 'minor', 'little'],
-                moderate: ['moderate', 'noticeable'],
-                severe: ['severe', 'intense', 'excruciating', 'unbearable']
-            }
-        },
-        'redness': {
-            keywords: ['red', 'bloodshot', 'irritated', 'inflamed', 'pink'],
-            severity_keywords: {
-                mild: ['slightly red', 'little red'],
-                moderate: ['red', 'bloodshot'],
-                severe: ['very red', 'extremely red', 'bright red']
-            }
-        },
-        'dry_eyes': {
-            keywords: ['dry', 'gritty', 'sandy', 'scratchy', 'irritated', 'burning'],
-            severity_keywords: {
-                mild: ['sometimes dry', 'little dry'],
-                moderate: ['dry', 'often dry'],
-                severe: ['very dry', 'extremely dry', 'constantly dry']
-            }
-        },
-        'floaters': {
-            keywords: ['floater', 'spots', 'specks', 'dots', 'cobwebs', 'strings', 'moving spots'],
-            severity_keywords: {
-                mild: ['few', 'occasional'],
-                moderate: ['several', 'many'],
-                severe: ['lots of', 'many', 'suddenly appeared']
-            }
-        },
-        'light_sensitivity': {
-            keywords: ['bright', 'light sensitivity', 'photophobia', 'sensitive to light', 'hurts in light'],
-            severity_keywords: {
-                mild: ['slightly sensitive', 'little sensitive'],
-                moderate: ['sensitive', 'bothers me'],
-                severe: ['very sensitive', 'cannot tolerate light', 'extremely sensitive']
-            }
-        },
-        'discharge': {
-            keywords: ['discharge', 'pus', 'sticky', 'crusty', 'yellow', 'green', 'mucus'],
-            severity_keywords: {
-                mild: ['little', 'slight'],
-                moderate: ['some', 'moderate'],
-                severe: ['lots of', 'thick', 'heavy']
-            }
-        },
-        'double_vision': {
-            keywords: ['double', 'diplopia', 'seeing two', 'two images'],
-            severity_keywords: {
-                mild: ['occasionally', 'sometimes'],
-                moderate: ['often', 'frequently'],
-                severe: ['always', 'constantly']
-            }
-        },
-        'headache': {
-            keywords: ['headache', 'head pain', 'migraine', 'head hurts'],
-            severity_keywords: {
-                mild: ['slight headache', 'minor headache'],
-                moderate: ['headache', 'head pain'],
-                severe: ['severe headache', 'terrible headache', 'migraine']
-            }
-        },
-        'itching': {
-            keywords: ['itchy', 'itch', 'itching', 'want to rub'],
-            severity_keywords: {
-                mild: ['slightly itchy', 'little itch'],
-                moderate: ['itchy', 'itching'],
-                severe: ['very itchy', 'constantly itching', 'extremely itchy']
-            }
-        }
-    };
-    
-    Object.keys(symptomDatabase).forEach(symptom => {
-        const symptomData = symptomDatabase[symptom];
+    try {
+        const lowerMessage = message.toLowerCase();
+        const detectedSymptoms = [];
         
-        // Check if any keywords match
-        const hasSymptom = symptomData.keywords.some(keyword => lowerMessage.includes(keyword));
+        // Simplified symptom detection
+        const symptoms = {
+            'blurred_vision': ['blurred', 'blur', 'fuzzy', 'unclear', 'hazy', 'cloudy'],
+            'eye_pain': ['pain', 'hurt', 'ache', 'sore', 'burning', 'stinging'],
+            'dry_eyes': ['dry', 'gritty', 'sandy', 'scratchy', 'irritated'],
+            'redness': ['red', 'bloodshot', 'irritated', 'inflamed', 'pink'],
+            'floaters': ['floater', 'spots', 'specks', 'dots', 'moving'],
+            'light_sensitivity': ['bright', 'light sensitivity', 'photophobia', 'sensitive to light'],
+            'discharge': ['discharge', 'pus', 'sticky', 'crusty', 'yellow', 'green'],
+            'double_vision': ['double', 'diplopia', 'seeing two', 'two images'],
+            'headache': ['headache', 'head pain', 'migraine'],
+            'itching': ['itchy', 'itch', 'itching', 'want to rub']
+        };
         
-        if (hasSymptom) {
-            // Determine severity
-            let severity = 'moderate'; // default
+        // Check for each symptom
+        Object.keys(symptoms).forEach(symptomType => {
+            const keywords = symptoms[symptomType];
+            const hasSymptom = keywords.some(keyword => lowerMessage.includes(keyword));
             
-            Object.keys(symptomData.severity_keywords).forEach(level => {
-                if (symptomData.severity_keywords[level].some(keyword => lowerMessage.includes(keyword))) {
-                    severity = level;
+            if (hasSymptom) {
+                // Determine severity based on intensity words
+                let severity = 'moderate';
+                if (lowerMessage.includes('severe') || lowerMessage.includes('terrible') || lowerMessage.includes('unbearable')) {
+                    severity = 'severe';
+                } else if (lowerMessage.includes('mild') || lowerMessage.includes('slight') || lowerMessage.includes('little')) {
+                    severity = 'mild';
                 }
-            });
-            
-            detectedSymptoms.push({
-                type: symptom,
-                severity: severity,
-                keywords_matched: symptomData.keywords.filter(keyword => lowerMessage.includes(keyword))
-            });
-        }
-    });
-    
-    return detectedSymptoms;
+                
+                detectedSymptoms.push({
+                    type: symptomType,
+                    severity: severity,
+                    keywords_matched: keywords.filter(keyword => lowerMessage.includes(keyword))
+                });
+            }
+        });
+        
+        return detectedSymptoms;
+        
+    } catch (error) {
+        console.error('Error in analyzeDetailedSymptoms:', error);
+        return [];
+    }
 }
+
+
 
 // Analyze eye power related queries
 function analyzePowerQueries(message) {
@@ -532,43 +623,201 @@ function classifyQuestionType(message) {
 
 // Generate intelligent, contextual responses
 function generateIntelligentResponse(analysis, originalMessage) {
-    const { symptoms, powerQuery, treatmentQuery, urgency, questionType } = analysis;
+    try {
+        const { symptoms, powerQuery, treatmentQuery, urgency, questionType } = analysis;
+        
+        let response = "";
+        
+        // Handle urgency first
+        if (urgency === 'high') {
+            response += "⚠️ **URGENT ATTENTION NEEDED** ⚠️\n\n";
+            response += "Based on your description, this may require immediate medical attention. Please consider:\n";
+            response += "• Visit an emergency room or urgent care immediately\n";
+            response += "• Call an ophthalmologist's emergency line\n";
+            response += "• Do not delay seeking professional care\n\n";
+        }
+        
+        // Handle symptoms with detailed medical advice
+        if (symptoms && symptoms.length > 0) {
+            response += generateSymptomSpecificResponse(symptoms);
+        }
+        
+        // Handle eye power queries
+        if (powerQuery && powerQuery.detected) {
+            response += generatePowerQueryResponse(powerQuery);
+        }
+        
+        // Handle treatment queries
+        if (treatmentQuery && treatmentQuery.detected) {
+            response += generateTreatmentResponse(symptoms);
+        }
+        
+        // If no specific symptoms detected, provide general guidance
+        if ((!symptoms || symptoms.length === 0) && (!powerQuery || !powerQuery.detected) && (!treatmentQuery || !treatmentQuery.detected)) {
+            response += generateGeneralResponse(questionType, originalMessage);
+        }
+        
+        // Add appropriate closing based on urgency
+        response += generateResponseClosing(urgency);
+        
+        return response || getSimpleResponse(originalMessage);
+        
+    } catch (error) {
+        console.error('Error in generateIntelligentResponse:', error);
+        return getSimpleResponse(originalMessage);
+    }
+}
+
+// Simple fallback response system
+function getSimpleResponse(message) {
+    const lowerMessage = message.toLowerCase();
     
-    let response = "";
-    
-    // Handle urgency first
-    if (urgency === 'high') {
-        response += "⚠️ **URGENT ATTENTION NEEDED** ⚠️\n\n";
-        response += "Based on your description, this may require immediate medical attention. Please consider:\n";
-        response += "• Visit an emergency room or urgent care immediately\n";
-        response += "• Call an ophthalmologist's emergency line\n";
-        response += "• Do not delay seeking professional care\n\n";
+    // Common symptom responses
+    if (lowerMessage.includes('blur') || lowerMessage.includes('vision')) {
+        return `**Blurred Vision Guidance:**
+
+Thank you for sharing your concern about blurred vision. This is one of the most common eye-related issues I help with.
+
+**Possible causes include:**
+• Refractive errors (nearsightedness, farsightedness)
+• Eye strain from screen time
+• Dry eyes
+• Need for updated prescription
+
+**Immediate steps you can take:**
+• Rest your eyes regularly (20-20-20 rule)
+• Ensure proper lighting when reading
+• Use artificial tears if eyes feel dry
+• Schedule an eye examination if persistent
+
+**When to see a doctor:** If blurred vision is sudden, severe, or doesn't improve with rest.
+
+Would you like me to help you analyze your eye power numbers or learn more about specific treatments?`;
     }
     
-    // Handle symptoms with detailed medical advice
-    if (symptoms.length > 0) {
-        response += generateSymptomSpecificResponse(symptoms);
+    if (lowerMessage.includes('dry') || lowerMessage.includes('gritty')) {
+        return `**Dry Eyes Support:**
+
+I understand you're experiencing dry eyes - this affects millions of people and is very treatable.
+
+**Quick relief measures:**
+• Use preservative-free artificial tears 4-6 times daily
+• Take frequent breaks from screens
+• Use a humidifier in dry environments
+• Avoid direct air from fans or AC
+
+**Lifestyle tips:**
+• Stay hydrated by drinking plenty of water
+• Include omega-3 rich foods in your diet
+• Wear sunglasses outdoors to reduce wind exposure
+
+**When to seek care:** If symptoms persist after 2 weeks of consistent treatment.
+
+Feel free to ask me about specific eye drops or other treatment options!`;
     }
     
-    // Handle eye power queries
-    if (powerQuery.detected) {
-        response += generatePowerQueryResponse(powerQuery);
+    if (lowerMessage.includes('pain') || lowerMessage.includes('hurt')) {
+        return `**Eye Pain Assessment:**
+
+I'm sorry you're experiencing eye pain. Let me help you understand what this might indicate.
+
+**For mild pain:**
+• Apply cool compress for 10-15 minutes
+• Avoid rubbing the eye
+• Use over-the-counter pain relief if needed
+
+**Seek immediate care if you have:**
+• Severe or sudden eye pain
+• Pain with vision changes
+• Pain with nausea or headache
+• Eye injury or trauma
+
+**Common causes:**
+• Dry eyes
+• Eye strain
+• Minor irritation
+• Allergies
+
+Would you like me to help you determine if this needs urgent attention or provide more specific guidance?`;
     }
     
-    // Handle treatment queries
-    if (treatmentQuery.detected) {
-        response += generateTreatmentResponse(symptoms);
+    if (lowerMessage.includes('power') || lowerMessage.includes('prescription') || lowerMessage.includes('glasses')) {
+        return `**Eye Power & Prescription Guidance:**
+
+I'd be happy to help you with eye power related questions!
+
+**I can assist with:**
+• Understanding your prescription numbers
+• Myopia progression concerns
+• When to update your glasses
+• LASIK surgery considerations
+
+**Use our Eye Power Analysis tool:**
+• Enter your current prescription numbers
+• Get detailed analysis of your vision condition
+• Receive personalized recommendations
+• Track power progression over time
+
+**General eye power tips:**
+• Get regular eye exams (annually or as recommended)
+• Monitor any changes in vision quality
+• Consider myopia control if progressing rapidly
+• Discuss lens options with your eye care provider
+
+Would you like to use our Eye Power Analysis tool, or do you have specific questions about your prescription?`;
     }
     
-    // If no specific symptoms detected, provide general guidance
-    if (symptoms.length === 0 && !powerQuery.detected && !treatmentQuery.detected) {
-        response += generateGeneralResponse(questionType, originalMessage);
+    // Greetings and general queries
+    if (lowerMessage.includes('hello') || lowerMessage.includes('hi') || lowerMessage.includes('hey')) {
+        return `**Hello! Welcome to VisionCare AI! 👋**
+
+I'm your AI Eye Care Assistant, ready to help with all your vision and eye health questions.
+
+**I can help you with:**
+👁️ Analyzing eye symptoms and providing guidance
+🔢 Understanding your eye power and prescription
+💊 Information about treatments and medications
+⚕️ Guidance on when to seek professional care
+
+**Popular topics I assist with:**
+• Blurred vision and focusing problems
+• Dry eyes and irritation
+• Eye pain and discomfort
+• Prescription questions and power analysis
+• Treatment options and recommendations
+
+**To get started, try asking:**
+• "My eyes feel dry and irritated"
+• "I have blurred vision when reading"
+• "Should I be concerned about my eye power?"
+• "What eye drops should I use?"
+
+What's on your mind about your eye health today?`;
     }
     
-    // Add appropriate closing based on urgency
-    response += generateResponseClosing(urgency);
-    
-    return response;
+    // Default response
+    return `**I'm Here to Help! 👁️**
+
+Thank you for your question about eye care. I'm your AI Eye Care Assistant with comprehensive knowledge about:
+
+**🔍 Symptom Analysis:** Describe any eye discomfort, vision changes, or concerns
+**💊 Treatment Options:** Learn about medications, therapies, and procedures  
+**🔢 Eye Power Consultation:** Questions about prescriptions and vision correction
+**🩺 Professional Care Guidance:** When and why to see an eye doctor
+
+**Try asking me about:**
+• Specific symptoms you're experiencing
+• Eye power and prescription questions
+• Treatment and medication information
+• General eye care and prevention tips
+
+**Some example questions:**
+• "My vision is blurry when I read"
+• "I have dry, itchy eyes"
+• "Is my eye power getting worse?"
+• "What are the best eye drops for me?"
+
+Please feel free to describe your specific eye concerns, and I'll provide personalized guidance! What would you like to know?`;
 }
 
 function generateSymptomSpecificResponse(symptoms) {
@@ -2413,3 +2662,21 @@ if ('serviceWorker' in navigator) {
         console.log('App ready for service worker registration');
     });
 }
+
+// Global test function for debugging chatbot
+window.testChatbot = function(message = "Hello, I have blurred vision") {
+    console.log('Testing chatbot with message:', message);
+    
+    const messageInput = document.getElementById('userMessage');
+    if (messageInput) {
+        messageInput.value = message;
+        sendMessage();
+        console.log('Test message sent successfully');
+    } else {
+        console.error('Could not find message input element');
+    }
+};
+
+// Make key functions globally accessible for debugging
+window.sendMessage = sendMessage;
+window.sendQuickMessage = sendQuickMessage;
